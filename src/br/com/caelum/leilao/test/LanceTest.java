@@ -4,13 +4,15 @@
 package br.com.caelum.leilao.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.*;
+import static br.com.caelum.leilao.matcher.LeilaoMatcher.temUmLance;
+
 
 import org.junit.Test;
 
 import br.com.caelum.leilao.dominio.Lance;
 import br.com.caelum.leilao.dominio.Leilao;
 import br.com.caelum.leilao.dominio.Usuario;
-import br.com.caelum.leilao.matcher.LeilaoMatcher;
 
 /**
  * @author Ramon Vieira
@@ -102,11 +104,9 @@ public class LanceTest {
 		
 		leilao.propoe(new Lance(ramon, 10));
 		
-		LeilaoMatcher.temUmLance(leilao.getLances().get(1));
+		assertThat(leilao, temUmLance(leilao.getLances().get(0)));
 		
 	}
-	
-	
 	
 
 }
