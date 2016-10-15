@@ -10,6 +10,7 @@ import org.junit.Test;
 import br.com.caelum.leilao.dominio.Lance;
 import br.com.caelum.leilao.dominio.Leilao;
 import br.com.caelum.leilao.dominio.Usuario;
+import br.com.caelum.leilao.matcher.LeilaoMatcher;
 
 /**
  * @author Ramon Vieira
@@ -26,6 +27,19 @@ public class LanceTest {
 		
 		leilao.propoe(new Lance(ramon, 2000));
 		leilao.propoe(new Lance(ramon, 2000));
+		
+		assertEquals(1,leilao.getLances().size());
+		
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void naoAceitarLancesNegativosEIguaisAZero(){
+		Leilao leilao = new Leilao("Viagem São Paulo");
+		
+		Usuario ramon = new Usuario("Ramon");
+		
+		leilao.propoe(new Lance(ramon, 0));
+		leilao.propoe(new Lance(ramon, -1));
 		
 		assertEquals(1,leilao.getLances().size());
 		
@@ -79,6 +93,20 @@ public class LanceTest {
 		assertEquals(20, leilao.getLances().get(2).getValor(), 0.00001);
 		
 	}
+	
+	@Test
+	public void verificaUmlance(){
+		Leilao leilao = new Leilao("Viagem São Paulo");
+		
+		Usuario ramon = new Usuario("Ramon");
+		
+		leilao.propoe(new Lance(ramon, 10));
+		
+		LeilaoMatcher.temUmLance(leilao.getLances().get(1));
+		
+	}
+	
+	
 	
 
 }

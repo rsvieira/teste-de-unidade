@@ -4,6 +4,8 @@
 package br.com.caelum.leilao.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.Collections;
 
@@ -48,6 +50,8 @@ public class AvaliadorTest {
 	  System.out.println("Finalizando... classe de teste.");
 	}
 
+	// Method que usa a api hamcrest;
+	
 	@Test
 	public void testaMaiorEMenorLance() {
 
@@ -64,13 +68,35 @@ public class AvaliadorTest {
 
 		avaliador.avalia(leilao);	
 		avaliador.mediaDosLances(leilao);
-
-		assertEquals(maiorValorEsperado, avaliador.getMaiorValor(), 0.00001);
-		assertEquals(menorValorEsperado, avaliador.getMenorValor(), 0.00001);
-		assertEquals(mediaEsperada, avaliador.mediaDosLances(leilao), 0.00001);
+		
+		assertThat(avaliador.getMenorValor(), equalTo(menorValorEsperado));
+        assertThat(avaliador.getMaiorValor(), equalTo(maiorValorEsperado));
+        assertThat(avaliador.mediaDosLances(leilao), equalTo(mediaEsperada));
 
 	}
 
+	//Method que usa a API Hamcrest (hasItem)
+	
+	@Test
+	public void verificaOsTresMaioresLances() {
+		
+		Leilao leilao = new LeilaoBuilder().criaLeilao("Leilão Fantasma")
+				.crialance(new Lance(ramon, 100.0))
+				.crialance(new Lance(joao, 300.0))
+				.crialance(new Lance(ramon, 700.0))
+				.crialance(new Lance(joao, 200.0))
+				.crialance(new Lance(ramon, 900.0)).builder();
+		
+		avaliador.avalia(leilao);
+		
+		assertThat(avaliador.getTresMaiores().size(), equalTo(3));
+		assertThat(leilao.getLances(), hasItems(
+				new Lance(ramon, 900.0),
+				new Lance(ramon, 700.0),
+				new Lance(joao, 300.0)));
+		
+	}
+	
 	@Test
 	public void possueApenasUmLance() {
 
@@ -124,24 +150,6 @@ public class AvaliadorTest {
 
 	}
 
-	@Test
-	public void verificaOsTresMaioresLances() {
-
-		Leilao leilao = new LeilaoBuilder().criaLeilao("Leilão Fantasma")
-				.crialance(new Lance(ramon, 100.0))
-				.crialance(new Lance(joao, 300.0))
-				.crialance(new Lance(ramon, 700.0))
-				.crialance(new Lance(joao, 200.0))
-				.crialance(new Lance(ramon, 900.0)).builder();
-
-		avaliador.avalia(leilao);
-
-		assertEquals(3, avaliador.getTresMaiores().size());
-		assertEquals(900.0, avaliador.getTresMaiores().get(0).getValor(), 0.00001);
-		assertEquals(700.0, avaliador.getTresMaiores().get(1).getValor(), 0.00001);
-		assertEquals(300.0, avaliador.getTresMaiores().get(2).getValor(), 0.00001);
-
-	}
 
 	@Test
 	public void devolveDoisLancesExistentes() {
@@ -160,7 +168,9 @@ public class AvaliadorTest {
 
 	}
 
-	@Test
+	// Teste que espera uma exception
+	
+	@Test(expected=RuntimeException.class)
 	public void leilaoVazio() {
 
 		Leilao leilao = new LeilaoBuilder()

@@ -20,6 +20,11 @@ public class Leilao {
 	}
 	
 	public void propoe(Lance lance) {
+		
+		if(lance.getValor() <= 0){
+			throw new IllegalArgumentException();
+		}
+		
 		if(lances.isEmpty() || ultimoUsuarioRepetido(lance)){
 			lances.add(lance);
 		}
